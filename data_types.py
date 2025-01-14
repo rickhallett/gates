@@ -24,12 +24,14 @@ class Message(BaseModel):
     content_type: str
     links: Optional[List[str]] = None
     audio_links: Optional[List[str]] = None
+    youtube_links: Optional[List[str]] = None
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.links = self.extract_links()
         self.audio_links = self.extract_audio_links()
-        
+        self.youtube_links = self.extract_youtube_links()
+
     def extract_links(self) -> List[str]:
         # Regex pattern to match Markdown links
         markdown_link_pattern = r'\[.*?\]\((.*?)\)'
@@ -44,3 +46,8 @@ class Message(BaseModel):
             if any(filetype in link for filetype in filetypes):
                 audio_links.append(link)
         return audio_links
+    
+    def extract_youtube_links(self) -> List[str]:
+        youtube_link_pattern = r'https?://(?:www\.)?youtube\.com/watch\?v=[\w-]+'
+        youtube_links = re.findall(youtube_link_pattern, self.content)
+        return youtube_links

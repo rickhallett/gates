@@ -26,13 +26,13 @@ class ThreadManager:
         
     def stop_all(self):
         print("Stopping all threads")
-        self._stop_event.set()  # Signal threads to stop
+        self._stop_event.set()
         if self.event_thread:
             print("Stopping event thread")
-            self.event_thread.join(timeout=5)  # Use a timeout
+            self.event_thread.join(timeout=1)
         if self.message_thread:
             print("Stopping message thread")
-            self.message_thread.join(timeout=5)  # Use a timeout
+            self.message_thread.join(timeout=1)  
 
         self.client.send_message({
             "type": "stream",
