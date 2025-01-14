@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 import re
 
 class Message(BaseModel):
@@ -51,3 +51,16 @@ class Message(BaseModel):
         youtube_link_pattern = r'https?://(?:www\.)?youtube\.com/watch\?v=[\w-]+'
         youtube_links = re.findall(youtube_link_pattern, self.content)
         return youtube_links
+    
+    def get_youtube_id(self, link: str) -> str:
+        youtube_id_pattern = r'https?://(?:www\.)?youtube\.com/watch\?v=([a-zA-Z0-9_-]{11})'
+        youtube_id = re.search(youtube_id_pattern, link)
+        return youtube_id.group(1) if youtube_id else None
+
+class OpenAIResponse(BaseModel):
+    id: str
+    object: str
+    created: int
+    model: str
+    choices: List[Dict[str, Any]]
+    usage: Dict[str, int]
