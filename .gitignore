@@ -21,3 +21,12 @@ logs/
 # Zulip
 zuliprc
 .aider*
+
+# AWS
+ark-comms_credentials.csv
+
+# Audio
+audio/
+
+# Transcripts
+transcripts/

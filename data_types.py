@@ -20,7 +20,7 @@ class Message(BaseModel):
     display_recipient: str
     type: str
     stream_id: int
-    avatar_url: str
+    avatar_url: Optional[str] = None
     content_type: str
     links: Optional[List[str]] = None
     audio_links: Optional[List[str]] = None
@@ -40,7 +40,7 @@ class Message(BaseModel):
         return links
     
     def extract_audio_links(self) -> List[str]:
-        filetypes = ["mp3", "wav", "ogg", "m4a", "aac", "flac", "wma", "aiff", "au", "amr", "aac", "m4a", "m4b", "m4p", "m4r", "m4v", "mp2", "mpa", "mpc", "mpd", "mpf", "mpg", "mpv", "oga", "ogg", "opus", "ra", "rm", "wav", "wma"]
+        filetypes = ['flac', 'm4a', 'mp3', 'mp4', 'mpeg', 'mpga', 'oga', 'ogg', 'wav', 'webm']
         audio_links = []
         for link in self.links:
             if any(filetype in link for filetype in filetypes):
