@@ -21,8 +21,10 @@ class App:
             setup_logging()
             self.signal_handler.setup()
             
-            self.thread_manager.start_event_listener(on_event)
-            self.thread_manager.start_message_listener(self.message_handler.on_message)
+            # self.thread_manager.start_event_listener(on_event)
+            # self.thread_manager.start_message_listener(self.message_handler.on_message)
+
+            self.client.call_on_each_message(self.message_handler.on_message)
             
         except KeyboardInterrupt:
             print("Keyboard interrupt detected. Exiting...")
