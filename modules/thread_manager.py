@@ -18,12 +18,23 @@ class ThreadManager:
     
     def start_message_listener(self, handler):
         def message_listener():
+            print("Starting message listener")
             while not self._stop_event.is_set():
+                print("Calling on each message")
                 self.client.call_on_each_message(handler)
+                print("Checking threads status")
+                self.check_threads_status()
         
         self.message_thread = threading.Thread(target=message_listener)
         self.message_thread.start()
-        
+
+    def check_threads_status(self):
+        # Check the status of the event and message threads
+        if self.event_thread:
+            print(f"Event Thread Alive: {self.event_thread.is_alive()}")
+        if self.message_thread:
+            print(f"Message Thread Alive: {self.message_thread.is_alive()}")
+
     def stop_all(self):
         print("Stopping all threads")
         self._stop_event.set()
