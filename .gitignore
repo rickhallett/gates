@@ -19,7 +19,7 @@ logs/
 .env
 
 # Zulip
-zuliprc
+zuliprc*
 .aider*
 
 # AWS

@@ -1,0 +1,26 @@
+version: 1.0
+runtime: python3
+build:
+  commands:
+    build:
+      - pip install --upgrade pip
+      - pip install -r requirements.txt
+run:
+  runtime-version: 3.11
+  command: python restart_on_crash.py
+  network:
+    port: 80
+  env:
+    - name: PYTHONUNBUFFERED
+      value: "1"
+  # Optional: If you need to increase memory/CPU
+  cpu: 1024
+  memory: 2048
+  # Optional: If you need environment variables
+  environment-variables:
+    - name: ENVIRONMENT
+      value: "production"
+  # Optional: If you're using secrets
+  secrets:
+    - name: OPENAI_API_KEY
+      value-from: "arn:aws:secretsmanager:eu-west-2:195275678116:secret:openai_key-yWHBjj"

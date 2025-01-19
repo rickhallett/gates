@@ -11,6 +11,13 @@ from youtube_transcript_api._errors import TranscriptsDisabled, NoTranscriptFoun
 import boto3
 from modules.utils import upload_file, download_audio_file, get_s3_url_and_destination
 from data_types import Message
+from modules.config import create_focus_client
+import threading
+from datetime import datetime
+import dotenv
+from modules.secrets import get_secret
+
+dotenv.load_dotenv()
 
 message_logger = logging.getLogger('message_logger')
 event_logger = logging.getLogger('event_logger')
@@ -23,6 +30,7 @@ class MessageHandler():
     def __init__(self, client: zulip.Client):
         self.client = client
         self.message = None;
+        self.start_countdown()
 
     def create_message(self, message):
         self.message = Message(**message)
@@ -45,26 +53,30 @@ f"""
         self.handle_message()
 
     def handle_message(self):
+        stream_name = self.message.display_recipient
+        topic_name = self.message.subject
+
         self.process_links(
             links=self.message.youtube_links,
             link_type='video',
             transcribe_method=self.transcribe_youtube_video,
-            stream_name='youtube',
-            topic_name='ai'
+            stream_name=stream_name,
+            topic_name=topic_name
         )
 
         self.process_links(
             links=self.message.audio_links,
             link_type='audio file',
             transcribe_method=self.transcribe_audio_file,
-            stream_name='voice-notes',
-            topic_name='random-thoughts'
+            stream_name=stream_name,
+            topic_name=topic_name
         )
 
     def process_links(self, links, link_type, transcribe_method, stream_name, topic_name):
         if not links:
             return
 
+        transcribed = []
         self.client.send_message({
             "type": "stream",
             "to": stream_name,
@@ -74,7 +86,9 @@ f"""
 
         for link in links:
             try:
-                transcribe_method(link)
+                success = transcribe_method(link, stream_name, topic_name)
+                if success:
+                    transcribed.append(link)
             except Exception as e:
                 self.client.send_message({
                     "type": "stream",
@@ -83,12 +97,20 @@ f"""
                     "content": f"Error transcribing {link}: {str(e)}"
                 })
 
-        self.client.send_message({
-            "type": "stream",
-            "to": stream_name,
-            "topic": topic_name,
-            "content": f"All {link_type}s have been processed."
-        })
+        if (len(transcribed) == len(links)):
+            self.client.send_message({
+                "type": "stream",
+                "to": stream_name,
+                "topic": topic_name,
+                "content": f"All {link_type}s have been processed."
+            })
+        else:
+            self.client.send_message({
+                "type": "stream",
+                "to": stream_name,
+                "topic": topic_name,
+                "content": f"Some {link_type}s failed to process."
+            })
 
     def get_s3_url_and_destination(self, audio_link):
         # Create a URL compatible with S3
@@ -113,13 +135,13 @@ f"""
         except Exception as e:
             raise Exception(f"Failed to download audio file: {str(e)}")
 
-    def transcribe_audio_file(self, audio_url: str):
+    def transcribe_audio_file(self, audio_url: str, stream_name: str, topic_name: str) -> bool:
         s3_object_name, destination_dir = get_s3_url_and_destination(audio_url)
         try:
             self.client.send_message({
                 "type": "stream",
-                "to": "voice-notes",
-                "topic": "random-thoughts",
+                "to": stream_name,
+                "topic": topic_name,
                 "content": f"Downloading audio from {s3_object_name}"
             })
             download_audio_file(s3_object_name, f"{destination_dir}/{Path(audio_url).name}")
@@ -127,7 +149,9 @@ f"""
             stem = Path(audio_url).stem
             ext = Path(audio_url).suffix
 
-            client = openai.Client()
+            client = openai.Client(
+                api_key=get_secret() if os.getenv("ENVIRONMENT") == "production" else os.getenv("OPENAI_API_KEY")
+            )
             with open(f"{destination_dir}/{stem}{ext}", "rb") as audio_file:
                 transcript = client.audio.transcriptions.create(
                     model="whisper-1",
@@ -149,10 +173,12 @@ f"""
                 topic_name="random-thoughts"
             )
 
+            return True
+
         except Exception as e:
             raise Exception(f"Error processing audio file: {str(e)}")
 
-    def transcribe_youtube_video(self, video_url: str):
+    def transcribe_youtube_video(self, video_url: str, stream_name: str, topic_name: str):
         try:
             video_id = video_url.split("v=")[1]
             data = YouTubeTranscriptApi.get_transcript(video_id)
@@ -162,26 +188,29 @@ f"""
                 content=concatenated_text,
                 prompt_template_path="prompts/transcribe.md",
                 output_stem=video_id,
-                stream_name="youtube",
-                topic_name="ai"
+                stream_name=stream_name,
+                topic_name=topic_name
             )
 
         except (TranscriptsDisabled, NoTranscriptFound) as e:
             error_message = f"Could not transcribe {video_id}: {str(e)}"
             self.client.send_message({
                 "type": "stream",
-                "to": "youtube",
-                "topic": "ai",
-                "content": error_message
+                "to": stream_name,
+                "topic": topic_name,
+                "content": self.remove_url_from_content(error_message, video_id)
             })
         except Exception as e:
             error_message = f"Error processing {video_id}: {str(e)}"
             self.client.send_message({
                 "type": "stream",
-                "to": "youtube",
-                "topic": "ai",
-                "content": error_message
+                "to": stream_name,
+                "topic": topic_name,
+                "content": self.remove_url_from_content(error_message, video_id)
             })
+
+    def remove_url_from_content(self, content, video_id):
+        return content.replace(f"https://www.youtube.com/watch?v={video_id}", "")
 
     def transcribe_content(self, content, prompt_template_path, output_stem, stream_name, topic_name):
         with open(prompt_template_path, "r") as f:
@@ -240,3 +269,41 @@ f"""
                 if current_line:
                     wrapped_content.append(' '.join(current_line))
         return '\n'.join(wrapped_content)
+    
+    def start_countdown(self):
+        def countdown_loop():
+            focus_client = create_focus_client()
+            deadline = datetime(2025, 1, 22, 13, 0, 0)
+
+            while True:
+                now = datetime.now()
+                if now >= deadline:
+                    focus_client.send_message({
+                        "type": "stream",
+                        "to": "countdown",
+                        "topic": "t-minus",
+                        "content": "The deadline has passed. Judging has begun."
+                    })
+                    break
+
+                # Calculate remaining time
+                time_remaining = deadline - now
+                days = time_remaining.days
+                hours, remainder = divmod(time_remaining.seconds, 3600)
+                minutes, _ = divmod(remainder, 60)
+                
+                # Print remaining time
+                focus_client.send_message({
+                    "type": "stream",
+                    "to": "countdown",
+                    "topic": "t-minus",
+                    "content": f"Time remaining: {days} days, {hours} hours, {minutes} minutes."
+                })
+                
+                # Wait for 30 minutes
+                time.sleep(30 * 60)
+
+        # Start the countdown in a separate thread
+        countdown_thread = threading.Thread(target=countdown_loop, name="countdown_thread", daemon=True)
+        countdown_thread.start()
+

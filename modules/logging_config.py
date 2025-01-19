@@ -2,13 +2,31 @@ import logging
 
 def setup_logging():
     # Configure message logging
-    message_logger = logging.getLogger('message_logger')
-    message_logger.setLevel(logging.INFO)
-    message_handler = logging.FileHandler("logs/gates.message.log")
-    message_logger.addHandler(message_handler)
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler('logs/supervisor.log'),
+            logging.StreamHandler()
+        ]
+    )
+
+    logging.basicConfig(
+        level=logging.ERROR,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler('logs/error.log'),
+            logging.StreamHandler()
+        ]
+    )
+
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler('logs/debug.log'),
+            logging.StreamHandler()
+        ]
+    )
     
-    # Configure event logging
-    event_logger = logging.getLogger('event_logger')
-    event_logger.setLevel(logging.INFO)
-    event_handler = logging.FileHandler("logs/gates.event.log")
-    event_logger.addHandler(event_handler)
+    

@@ -2,16 +2,18 @@ import subprocess
 import time
 import sys
 import logging
-
+from modules.config import create_client
 # Setup logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('supervisor.log'),
+        logging.FileHandler('logs/supervisor.log'),
         logging.StreamHandler()
     ]
 )
+
+client = create_client()
 
 def run_script():
     while True:
@@ -26,9 +28,18 @@ def run_script():
                 
         except subprocess.CalledProcessError as e:
             logging.error(f"Script crashed with error: {e}")
+            error = e
         except Exception as e:
             logging.error(f"Supervisor error: {e}")
+            error = e
             
+        client.send_message({
+                "type": "stream",
+                "to": "gates",
+                "topic": "status",
+                "content": f"Script crashed with error: {error}.\nRestarting script in 10 seconds..."
+            })
+          
         logging.info("Restarting in 10 seconds...")
         time.sleep(10)  # Wait before restarting
 
