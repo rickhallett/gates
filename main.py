@@ -28,7 +28,17 @@ class App:
             setup_logging()
             self.signal_handler.setup()
 
-            self.client.call_on_each_message(self.message_handler.on_message)
+            # Replace the call_on_each_message with a manual event queue
+            queue_id = None
+            while True:
+                if queue_id is None:
+                    response = self.client.register()
+                    queue_id = response['queue_id']
+                
+                response = self.client.get_events(queue_id=queue_id, last_event_id=-1)
+                for event in response['events']:
+                    if event['type'] == 'message':
+                        self.message_handler.on_message(event['message'])
             
         except KeyboardInterrupt:
             print("Keyboard interrupt detected. Exiting...")
