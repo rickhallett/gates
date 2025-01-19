@@ -20,7 +20,3 @@ run:
   environment-variables:
     - name: ENVIRONMENT
       value: "production"
-  # Optional: If you're using secrets
-  secrets:
-    - name: OPENAI_API_KEY
-      value-from: "arn:aws:secretsmanager:eu-west-2:195275678116:secret:openai_key-yWHBjj"
