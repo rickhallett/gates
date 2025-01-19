@@ -1,1 +1,1 @@
-web: python restart_on_crash.py
+worker: python restart_on_crash.py
