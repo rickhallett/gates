@@ -1,5 +1,6 @@
 import sys
 import signal
+import time
 from modules.config import create_client
 from modules.thread_manager import ThreadManager
 from modules.signal_handler import SignalHandler
@@ -28,18 +29,31 @@ class App:
             setup_logging()
             self.signal_handler.setup()
 
-            # Replace the call_on_each_message with a manual event queue
             queue_id = None
+            last_event_id = -1  # Track the last event ID
             while True:
-                if queue_id is None:
-                    response = self.client.register()
-                    queue_id = response['queue_id']
-                
-                response = self.client.get_events(queue_id=queue_id, last_event_id=-1)
-                for event in response['events']:
-                    if event['type'] == 'message':
-                        self.message_handler.on_message(event['message'])
-            
+                try:
+                    if queue_id is None:
+                        response = self.client.register()
+                        queue_id = response['queue_id']
+                        last_event_id = -1  # Reset event ID on new queue
+                    
+                    response = self.client.get_events(queue_id=queue_id, last_event_id=last_event_id)
+                    if 'events' not in response:
+                        print(f"Invalid response from server: {response}")
+                        queue_id = None  # Force re-registration
+                        time.sleep(5)
+                        continue
+
+                    for event in response['events']:
+                        last_event_id = max(last_event_id, event['id'])
+                        if event['type'] == 'message':
+                            self.message_handler.on_message(event['message'])
+                except Exception as e:
+                    print(f"Error in event loop: {e}")
+                    print(f"Full error response: {response}")  # Add more debug info
+                    queue_id = None  # Force re-registration
+                    time.sleep(5)  # Wait before retrying
         except KeyboardInterrupt:
             print("Keyboard interrupt detected. Exiting...")
             self.signal_handler._handle_signal(signal.SIGINT, None)

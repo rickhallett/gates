@@ -8,3 +8,13 @@
 2025-01-19 12:20:11,181 - INFO - id=946 sender_id=8 content='Test' recipient_id=9 timestamp=1737289211 client='ZulipElectron' subject='test' topic_links=[] is_me_message=False reactions=[] submessages=[] sender_full_name='Silver' sender_email='kai@oceanheart.ai' sender_realm_str='' display_recipient='sandbox' type='stream' stream_id=2 avatar_url='https://awk-comms-avatar.s3.amazonaws.com/2/00d57a61b94f62f0f5b00fee316fed89c018a657.png' content_type='text/x-markdown' links=[] audio_links=[] youtube_links=[]
 
 
+2025-01-19 13:06:53,683 - INFO - Starting main script...
+2025-01-19 13:25:29,798 - INFO - id=1043 sender_id=8 content='Test' recipient_id=9 timestamp=1737293129 client='ZulipElectron' subject='test' topic_links=[] is_me_message=False reactions=[] submessages=[] sender_full_name='Silver' sender_email='kai@oceanheart.ai' sender_realm_str='' display_recipient='sandbox' type='stream' stream_id=2 avatar_url='https://awk-comms-avatar.s3.amazonaws.com/2/00d57a61b94f62f0f5b00fee316fed89c018a657.png' content_type='text/x-markdown' links=[] audio_links=[] youtube_links=[]
+
+
+2025-01-19 13:26:21,894 - INFO - id=1044 sender_id=8 content='Test 1224444' recipient_id=9 timestamp=1737293181 client='ZulipElectron' subject='test' topic_links=[] is_me_message=False reactions=[] submessages=[] sender_full_name='Silver' sender_email='kai@oceanheart.ai' sender_realm_str='' display_recipient='sandbox' type='stream' stream_id=2 avatar_url='https://awk-comms-avatar.s3.amazonaws.com/2/00d57a61b94f62f0f5b00fee316fed89c018a657.png' content_type='text/x-markdown' links=[] audio_links=[] youtube_links=[]
+
+
+2025-01-19 13:27:06,792 - INFO - id=1049 sender_id=8 content='Tset' recipient_id=9 timestamp=1737293226 client='ZulipElectron' subject='test' topic_links=[] is_me_message=False reactions=[] submessages=[] sender_full_name='Silver' sender_email='kai@oceanheart.ai' sender_realm_str='' display_recipient='sandbox' type='stream' stream_id=2 avatar_url='https://awk-comms-avatar.s3.amazonaws.com/2/00d57a61b94f62f0f5b00fee316fed89c018a657.png' content_type='text/x-markdown' links=[] audio_links=[] youtube_links=[]
+
+
