@@ -1,26 +1,25 @@
----
-version: 1.0
-runtime: python311
-build:
-  commands:
-    build:
-      - pip3 install pipenv
-      - pipenv install
+ServiceName: python-app-runner-service
+SourceConfiguration:
+  CodeRepository:
+    RepositoryType: CodeConfiguration
+    Code:
+      ConfigurationSource: API
+      CodeConfiguration:
+        Runtime: PYTHON_3
+        BuildCommand: |
+          pip3 install pipenv
+          pipenv install
+        StartCommand: python3 restart_on_crash.py
+        Port: 80
+        RuntimeEnvironmentVariables:
+          - Name: PYTHONUNBUFFERED
+            Value: "1"
+          - Name: ENVIRONMENT
+            Value: "production"
+        RuntimeEnvironmentSecrets:
+          - Name: openai_key
+            Value: "arn:aws:secretsmanager:eu-west-2:195275678116:secret:openai_key-yWHBjj"
+InstanceConfiguration:
+  InstanceRoleArn: "arn:aws:iam::195275678116:role/aws-service-role/apprunner.amazonaws.com/AWSServiceRoleForAppRunner"
 
-run:
-  runtime-version: 3.11
-  pre-run:
-    - pip3 install pipenv
-    - pipenv install
-  command: python3 restart_on_crash.py
-  network:
-    port: 80
-  env:
-    - name: PYTHONUNBUFFERED
-      value: "1"
-    - name: ENVIRONMENT
-      value: "production"
-  secrets:
-    - name: openai_key
-      value-from: "arn:aws:secretsmanager:eu-west-2:195275678116:secret:openai_key-yWHBjj"
-  service_role: "arn:aws:iam::195275678116:role/aws-service-role/apprunner.amazonaws.com/AWSServiceRoleForAppRunner"
+aws apprunner create-service --cli-input-yaml file://apprunner.yaml --service-name python-app-runner-service --source-configuration '{"CodeRepository": {"RepositoryUrl": "https://github.com/rickhallett/gates", "SourceCodeVersion": {"Type": "BRANCH", "Value": "master"}}}'

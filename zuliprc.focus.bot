@@ -1,0 +1,4 @@
+[api]
+email=focus-bot-bot@talk.oceanheart.online
+key={{FOCUS_ZULIP_API_KEY}}
+site=https://talk.oceanheart.online

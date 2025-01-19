@@ -10,7 +10,7 @@ wheels/
 .venv
 
 # Logs
-logs/
+
 
 # Aider
 .aider.conf.yml
@@ -19,7 +19,7 @@ logs/
 .env
 
 # Zulip
-zuliprc*
+
 .aider*
 
 # AWS

@@ -1,0 +1,4 @@
+[api]
+email=gates-bot@talk.oceanheart.online
+key={{GATES_ZULIP_API_KEY}}
+site=https://talk.oceanheart.online
