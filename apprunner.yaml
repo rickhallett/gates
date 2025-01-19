@@ -1,12 +1,16 @@
 ---
 version: 1.0
-runtime: docker
-
+runtime: python311
 build:
-  dockerfile: Dockerfile
+  commands:
+    - python3 -m venv .venv
+    - source .venv/bin/activate
+    - pip3 install --upgrade pip
+    - pip3 install -r requirements.txt
 
 run:
-  runtime-version: 1.0
+  runtime-version: 3.11
+  command: python3 restart_on_crash.py
   network:
     port: 80
   env:
@@ -14,3 +18,6 @@ run:
       value: "1"
     - name: ENVIRONMENT
       value: "production"
+  secrets:
+    - name: openai_key
+      value-from: "arn:aws:secretsmanager:eu-west-2:195275678116:secret:openai_key-yWHBjj"
