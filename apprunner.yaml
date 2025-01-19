@@ -3,13 +3,13 @@ version: 1.0
 runtime: python311
 build:
   commands:
-    build:   
+    build:
       - pip3 install pipenv
       - pipenv install
 
 run:
   runtime-version: 3.11
-  pre-run:  
+  pre-run:
     - pip3 install pipenv
     - pipenv install
   command: python3 restart_on_crash.py
@@ -23,3 +23,4 @@ run:
   secrets:
     - name: openai_key
       value-from: "arn:aws:secretsmanager:eu-west-2:195275678116:secret:openai_key-yWHBjj"
+  service_role: "arn:aws:iam::195275678116:role/aws-service-role/apprunner.amazonaws.com/AWSServiceRoleForAppRunner"
