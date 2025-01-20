@@ -1,0 +1,38 @@
+{
+  "id": "chatcmpl-ArdfSyKJGQJjXRZREYFVf5TSC4tYB",
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "logprobs": null,
+      "message": {
+        "content": "# Note Title: \nEnemy Encounter at Sea\n\n# Note Summary: \nThe captain has located the enemy approximately 60 nautical miles to the left. They are accompanied by John Silver.\n\n# Suggested Tags: \n- Enemy Encounter\n- Maritime Operation\n- Captain's log\n- Nautical Miles\n- John Silver\n\n# Sentiment Detection: \nNeutral, with possible underlying tension due to the context of the enemy spotting.\n\n# Action Identification: \n\nGiven the information provided, no clear actionable items can be outlined. More context would be necessary to identify specific actions.",
+        "refusal": null,
+        "role": "assistant",
+        "audio": null,
+        "function_call": null,
+        "tool_calls": null
+      }
+    }
+  ],
+  "created": 1737347230,
+  "model": "gpt-4-0613",
+  "object": "chat.completion",
+  "service_tier": "default",
+  "system_fingerprint": null,
+  "usage": {
+    "completion_tokens": 116,
+    "prompt_tokens": 216,
+    "total_tokens": 332,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 0
+    }
+  }
+}

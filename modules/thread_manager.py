@@ -1,5 +1,9 @@
 import threading
+import os
 from typing import Optional
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class ThreadManager:
     def __init__(self, client):
@@ -45,11 +49,12 @@ class ThreadManager:
             print("Stopping message thread")
             self.message_thread.join(timeout=1)  
 
-        self.client.send_message({
-            "type": "stream",
-            "to": "sandbox",
-            "topic": "test",
-            "content": "Gates is off deck."
-        })
+        if os.getenv("ENVIRONMENT") == "production":
+            self.client.send_message({
+                "type": "stream",
+                "to": "sandbox",
+                "topic": "test",
+                "content": "Gates is off deck."
+            })
 
         print("All threads stopped")

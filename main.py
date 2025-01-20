@@ -1,11 +1,15 @@
 import sys
 import signal
 import time
+import os
+from dotenv import load_dotenv
 from modules.config import create_client
 from modules.thread_manager import ThreadManager
 from modules.signal_handler import SignalHandler
 from modules.logging_config import setup_logging
 from modules.handlers import MessageHandler
+
+load_dotenv()
 
 class App:
     def __init__(self):
@@ -18,12 +22,13 @@ class App:
         print("Gates is on deck.")
         print("Running script. Press Ctrl+C to terminate.")
 
-        self.client.send_message({
-            "type": "stream",
-            "to": "gates",
-            "topic": "status",
-            "content": "Gates is on deck."
-        })
+        if os.getenv("ENVIRONMENT") == "production":
+            self.client.send_message({
+                "type": "stream",
+                "to": "gates",
+                "topic": "status",
+                "content": "Gates is on deck."
+            })
         
         try:
             setup_logging()

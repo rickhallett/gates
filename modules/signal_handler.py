@@ -1,6 +1,9 @@
 import signal
 import sys
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class SignalHandler:
     def __init__(self, thread_manager, client):
@@ -12,12 +15,13 @@ class SignalHandler:
         signal.signal(signal.SIGTERM, self._handle_signal)
         
     def _handle_signal(self, signum, frame):
-        print(f"Gates was thrown overboard. Signum: {signum}, Frame: {frame}")
-        self.client.send_message({
-            "type": "stream",
-            "to": "gates",
-            "topic": "status",
-            "content": f"Gates was thrown overboard. Signum: {signum}, Frame: {frame}"
-        })
+        if os.getenv("ENVIRONMENT") == "production":
+            print(f"Gates was thrown overboard. Signum: {signum}, Frame: {frame}")
+            self.client.send_message({
+                "type": "stream",
+                "to": "gates",
+                "topic": "status",
+                "content": f"Gates was thrown overboard. Signum: {signum}, Frame: {frame}"
+            })
         self.thread_manager.stop_all()
         os._exit(0)

@@ -1,0 +1,10 @@
+{
+  "result": "success",
+  "msg": "",
+  "messages": [],
+  "found_anchor": false,
+  "found_oldest": true,
+  "found_newest": true,
+  "history_limited": false,
+  "anchor": 10000000000000000
+}

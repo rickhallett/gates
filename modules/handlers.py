@@ -16,6 +16,7 @@ import threading
 from datetime import datetime
 import dotenv
 from modules.secrets import get_secret
+from typing import Any
 
 dotenv.load_dotenv()
 
@@ -29,8 +30,10 @@ def on_event(event):
 class MessageHandler():
     def __init__(self, client: zulip.Client):
         self.client = client
+        self.openai_client = openai.Client(api_key=get_secret() if os.getenv("ENVIRONMENT") == "production" else os.getenv("OPENAI_API_KEY"))
         self.message = None;
         self.start_countdown()
+        self.run_standup_monitoring()
 
     def create_message(self, message):
         self.message = Message(**message)
@@ -149,11 +152,8 @@ f"""
             stem = Path(audio_url).stem
             ext = Path(audio_url).suffix
 
-            client = openai.Client(
-                api_key=get_secret() if os.getenv("ENVIRONMENT") == "production" else os.getenv("OPENAI_API_KEY")
-            )
             with open(f"{destination_dir}/{stem}{ext}", "rb") as audio_file:
-                transcript = client.audio.transcriptions.create(
+                transcript = self.openai_client.audio.transcriptions.create(
                     model="whisper-1",
                     file=audio_file
                 )
@@ -306,4 +306,92 @@ f"""
         # Start the countdown in a separate thread
         countdown_thread = threading.Thread(target=countdown_loop, name="countdown_thread", daemon=True)
         countdown_thread.start()
+
+    def get_week_and_quarter(self):
+        current_date = datetime.now()
+        week = current_date.isocalendar().week
+        
+        # Calculate quarter (1-4) based on month
+        month = current_date.month
+        quarter = (month - 1) // 3 + 1
+        
+        return quarter, week
+
+    def create_standup_logs(self):
+        # if the day is not a sunday, return
+        if datetime.now().weekday() != 6:
+            return
+
+        Q, week = self.get_week_and_quarter()
+        print(f"Creating standup logs for Q{Q} Week{week}")
+
+        users = ["kai@oceanheart.ai", "blakout1@icloud.com"]
+        for user in users:
+            request: dict[str, Any] = {
+                "anchor": "newest",
+                "num_before": 100,
+                "num_after": 0,
+                "narrow": [
+                    {"operator": "sender", "operand": user},
+                    {"operator": "channel", "operand": "accountability"},
+                    {"operator": "topic", "operand": f"Q{Q}:Week-{week}"},
+                ],
+            }
+            messages = self.client.get_messages(request)
+            with open(f"logs/accountability-logs/accountability-Q{Q}-Week{week}-{user}.json", "w") as f:
+                json.dump(messages, f, indent=2)
+
+    def create_standup_reports(self):
+        if datetime.now().weekday() != 6:
+            return
+        
+        Q, week = self.get_week_and_quarter()
+        users = ["kai@oceanheart.ai", "blakout1@icloud.com"]
+        for user in users:
+            with open(f"logs/accountability-logs/accountability-Q{Q}-Week{week}-{user}.json", "r") as f:
+                messages = json.load(f)
+
+            with open("prompts/accountability_summary.xml", "r") as f:
+                prompt_template = f.read()
+
+            prompt = prompt_template.replace("{{json}}", json.dumps(messages))
+
+            response = self.openai_client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant that creates accountability reports from chat room message logs"},
+                    {"role": "user", "content": prompt}
+                ],
+            )
+
+            content = response.choices[0].message.content
+
+            with open(f"logs/standup-reports/accountability-Q{Q}-Week{week}-{user}.md", "w") as f:
+                f.write(content)
+
+            self.client.send_message({
+                "type": "stream",
+                "to": "accountability",
+                "topic": f"Q{Q}:Week-{week}",
+                "content": f"Standup report for {user} has been created."
+            })
+
+            self.client.send_message({
+                "type": "stream",
+                "to": "accountability",
+                "topic": f"Q{Q}:Week-{week}",
+                "content": f"```md\n{content}\n```"
+            })
+
+    def run_standup_monitoring(self):
+        def start_monitor_process():
+            while True:
+                self.create_standup_logs()
+                self.create_standup_reports()
+                time.sleep(60 * 60 * 24)
+
+        monitor_thread = threading.Thread(target=start_monitor_process, name="monitor_thread", daemon=True)
+        monitor_thread.start()
+        print("Standup monitoring thread started")
+
 
