@@ -26,7 +26,5 @@ wheels/
 ark-comms_credentials.csv
 
 # Audio
-audio/
 
 # Transcripts
-transcripts/
