@@ -93,6 +93,8 @@ f"""
                 success = transcribe_method(link, stream_name, topic_name)
                 if success:
                     transcribed.append(link)
+                if os.getenv("ENVIRONMENT") == "production":
+                    transcribed.append(link)
             except Exception as e:
                 self.client.send_message({
                     "type": "stream",
