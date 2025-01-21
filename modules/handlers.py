@@ -59,13 +59,14 @@ f"""
         stream_name = self.message.display_recipient
         topic_name = self.message.subject
 
-        self.process_links(
-            links=self.message.youtube_links,
-            link_type='video',
-            transcribe_method=self.transcribe_youtube_video,
-            stream_name=stream_name,
-            topic_name=topic_name
-        )
+        if os.getenv("ENVIRONMENT") != "production":
+            self.process_links(
+                links=self.message.youtube_links,
+                link_type='video',
+                transcribe_method=self.transcribe_youtube_video,
+                stream_name=stream_name,
+                topic_name=topic_name
+            )
 
         self.process_links(
             links=self.message.audio_links,
