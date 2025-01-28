@@ -319,7 +319,7 @@ class MessageHandler:
     def start_countdown(self):
         def countdown_loop():
             focus_client = create_focus_client()
-            deadline = datetime(2025, 1, 22 + 7, 13, 0, 0)
+            deadline = datetime(2025, 1, 22 + 7 + 1, 1, 0, 0)
 
             while True:
                 now = datetime.now()
