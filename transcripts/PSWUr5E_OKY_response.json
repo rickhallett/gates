@@ -1,0 +1,38 @@
+{
+  "id": "chatcmpl-AsDYVpEomC5xgLN2lk5yOz4J3lHr9",
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "logprobs": null,
+      "message": {
+        "content": "```md\n# AI Engineering Skills for 2022: How to Excel in the AI Era\n\n## Tags\nAI, Language Modelling, AI Engineering, OpenAI, Tools, Orchestration, Evaluation, Observability, Mindsets.\n\n## Summary\nAI and language models are now influencing the skills required to excel as an engineer. In the new era of AI engineering, recognizing and understanding certain skill sets will help individuals stay ahead of the curve. This document focuses on outlining these skills through six key sections.\n\n### Index of Sections\n1. Working with Models\n2. The Art of Prompting\n3. Context & Retrieval\n4. Orchestration\n5. Evaluations and Observability\n6. The Mindset for AI Engineering\n\n### Working with Models\nThe first stop on the roadmap to AI engineering pivots on working with popular AI models such as OpenAI, Anthropic, Meta, and Google. Understanding how to work with these models' APIs, manage models locally or through open-source systems, and operate various models types is key. However, model training and fine-tuning come later, more of optimization skills learned once the basics are grasped.\n\n### The Art of Prompting\nPrompting plays a vital role in eliciting desired behaviour from a model. While this sector runs deep, four key strategies have proven useful: Chain of Thought, Including Examples, Structured Outputs, and Advanced Prompt Management. Knowledge of these areas opens up job opportunities such as prompt engineering or leading to advanced competencies like retrieval.\n\n### Context & Retrieval\nThis section discusses the concept of retrieval or extracting data to enrich a language model\u2019s response (also known as Retrieval-Augmented Generation or RAG). Important terminologies such as 'embeddings' and 'semantic search' are explored, together with strategies to overcome retrieval challenges.\n\n### Orchestration\nOrchestration involves creating systems that function jointly. The base level of orchestration makes use of frameworks such as Lang chain. Once mastered, engineers can delve deeper into the world of Agents and Long-term Memory, enhancing overall application performance.\n\n### Evaluations and Observability\nEvaluations are considered the unit tests of language model applications. Evaluations help trace the performance of language models for more accurate outputs. Observability kicks in by aiding in tracing, debugging and cost management for AI engineering experiences.\n\n### The Mindset for AI Engineering\nUnderstanding new capabilities that AI brings about, building swiftly, getting acquainted with emerging tools, scaling AI apps, and having a growth mindset are vital meta skills for excelling in AI engineering.\n\n## Conclusion\nEntering the era of AI demands the mastery of a new range of skills and toolsets for engineers. As the industry still grapples with standardizing best practices, the time is opportune for engineers to deepen their knowledge, apply these skills and gain a competitive edge in the industry.\n\n## Key Questions, Takeaways, etc.\n- What new skills does the AI era call for in engineers?\n- How can one effectively develop the art of prompting in AI engineering?\n- How does retrieval complement the efficiency of a language model?\n- What is orchestration, and how does it advance AI engineering?\n- How do evaluations and observability impact AI engineering?\n- What mindset is essential for thriving in the era of AI?\n\nTo access resources mentioned above, check the [link](https://link to resources) in the description.\n```\n",
+        "refusal": null,
+        "role": "assistant",
+        "audio": null,
+        "function_call": null,
+        "tool_calls": null
+      }
+    }
+  ],
+  "created": 1737485183,
+  "model": "gpt-4-0613",
+  "object": "chat.completion",
+  "service_tier": "default",
+  "system_fingerprint": null,
+  "usage": {
+    "completion_tokens": 689,
+    "prompt_tokens": 4038,
+    "total_tokens": 4727,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 3968
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "id": "chatcmpl-AsDVlSbjaLrJHnVn7JGb7SQk5Vs6w",
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "logprobs": null,
+      "message": {
+        "content": "```md\n# AI Today: Future Opportunities and Challenges\n\n## Tags\nAI, Future technology, Innovation\n\n## Summary\nA discussion with Dario Mody, CEO of Anthropics, about the future of artificial intelligence (AI), and how it's shaping up. The conversation explores whether AI is hitting a wall, the evolution and potential of AI, and the commoditization of large language models.\n\n### Index of Sections\n1. [Current State of AI]\n2. [Future of AI]\n3. [AI and Tech Commoditization]\n4. [Role in Healthcare]\n\n### Current State of AI\nMody discusses his ten-year career in AI, during which he worked at major companies like Google and Open AI, and his belief that despite instances where progress seemed to halt, innovations allowed for continued growth. He firmly declares that AI is not hitting a wall and, in fact, he's more confident than ever that we are close to having powerful capabilities. \n\n### Future of AI\nMody expresses the belief that AI could soon outperform humans in almost all tasks. He suggests the metaphor of a \"country of geniuses in a data center\" to describe the potential power and implications of AI. Over the next few years, Mody forecasts that we might develop AI systems that can operate on a computer, perform tasks, write and compile code, communicate with team members, and keep them updated. The key goal for Anthropics in the next year is building a \"virtual collaborator\", and they've begun taking steps towards it with the development of \"computer use\" -- a system where AI devices can operate independently.\n\n### AI and Tech Commoditization\nMody acknowledges the potential for AI to become commoditized, with enough resources and processing power. However, he believes that only a limited number of players will have access to the necessary volume of chips. The unique aspect of each AI model allows for plenty of differentiation. With Anthropics' Claude model, users have had a more personable and enjoyable interaction compared to other models on the market.\n\n### Role in Healthcare\nReference to a study by Stanford Medical School was made, where radiologists were shown to use models in their diagnoses. The models were measured both by the accuracy of the diagnoses they provided and their patient interaction.\n    \n## Conclusion\nAI has come a long way, and the future promises even more advancements. Although there are concerns about commoditization, given the demand for massive resources, the unique attributes of each model implies considerable variations. AI's potential in industries such as healthcare is also great, but further discussions are needed to clarify its role.\n\n## Key Questions, Takeaways, etc.\n- How far is AI from hitting a \"wall\" or the limit of its development?\n- What are the potent future advantages and threats of AI?\n- Is commoditization of AI models possible?\n- How can AI be safely integrated into industries such as healthcare?\n```\n",
+        "refusal": null,
+        "role": "assistant",
+        "audio": null,
+        "function_call": null,
+        "tool_calls": null
+      }
+    }
+  ],
+  "created": 1737485013,
+  "model": "gpt-4-0613",
+  "object": "chat.completion",
+  "service_tier": "default",
+  "system_fingerprint": null,
+  "usage": {
+    "completion_tokens": 593,
+    "prompt_tokens": 2338,
+    "total_tokens": 2931,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 2304
+    }
+  }
+}
